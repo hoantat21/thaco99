@@ -6,11 +6,11 @@ rvm:
 sudo: false
 
 install: 
-- bundle config build.popen4 --source http://gemcutter.org
+- bundle install
 - pip install --user awscli
 - ~/.local/bin/aws configure set preview.cloudfront true
 
-  
+# - bundle config build.popen4 --source http://gemcutter.org
 # Build and deploy the site to the S3 bucket on push to master, unless PR
 script: bundle exec jekyll 4.0.0 new . --force
 branches:
