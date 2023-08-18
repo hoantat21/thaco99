@@ -1,6 +1,37 @@
+language: ruby
+rvm:
+- 2.1
+  
+# Containers are cool!  
+sudo: false
+
+install: 
+- bundle install
+- pip install --user awscli
+- ~/.local/bin/aws configure set preview.cloudfront true
+  
+# Build and deploy the site to the S3 bucket on push to master, unless PR
+script: bundle exec jekyll build
+branches:
+  only:
+  - main
 deploy:
   provider: s3
   access_key_id: "$AWS_ACCESS_KEY_ID"
-  secret_access_key: "$AWS_SECRET_ACCESS_KEY"
-  bucket: "thaco99"
+  secret_access_key:
+    secure: "$AWS_SECRET_ACCESS_KEY"
+  bucket: thaco99
+  acl: public_read
   skip_cleanup: true
+  local_dir: _site
+  region: us-east-1
+  on:
+    branch: main
+    condition: $TRAVIS_PULL_REQUEST = "false"
+
+after_success: 
+- '[[ $TRAVIS_PULL_REQUEST == "false" ]] && python invalidation-list.py'
+
+after_deploy:
+- '[[ $TRAVIS_PULL_REQUEST == "false" ]] && ~/.local/bin/aws cloudfront create-invalidation
+  --invalidation-batch file://payload.json --distribution-id $DISTRIBUTION_ID'
