@@ -1,6 +1,16 @@
 language: ruby
-cache: bundler
-install: bundle install
+rvm:
+- 2.1
+  
+# Containers are cool!  
+sudo: false
+
+install: 
+- bundle config build.popen4 --source http://gemcutter.org
+- pip install --user awscli
+- ~/.local/bin/aws configure set preview.cloudfront true
+  
+# Build and deploy the site to the S3 bucket on push to master, unless PR
 script: bundle exec jekyll build
 branches:
   only:
