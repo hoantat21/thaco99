@@ -1,16 +1,6 @@
 language: ruby
-rvm:
-- 2.1
-  
-# Containers are cool!  
-sudo: false
-
-install: 
-- bundle install
-- pip install --user awscli
-- ~/.local/bin/aws configure set preview.cloudfront true
-  
-# Build and deploy the site to the S3 bucket on push to master, unless PR
+cache: bundler
+install: bundle install
 script: bundle exec jekyll build
 branches:
   only:
