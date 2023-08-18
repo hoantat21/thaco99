@@ -9,9 +9,10 @@ install:
 - bundle config build.popen4 --source http://gemcutter.org
 - pip install --user awscli
 - ~/.local/bin/aws configure set preview.cloudfront true
+- bundle add jekyll
   
 # Build and deploy the site to the S3 bucket on push to master, unless PR
-script: bundle exec jekyll new --force --skip-bundle 
+script: bundle exec jekyll build
 branches:
   only:
   - main
